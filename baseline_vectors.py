@@ -2,6 +2,7 @@
 
 import numpy as np
 import sys, os
+import itertools
 
 class TelescopeModel():
 
@@ -10,9 +11,11 @@ class TelescopeModel():
         self.txt_path = "antennae_coordinates.txt"
         self.input_dimensions = None
         self.coord_matrix = None
+        self.baseline_dict = {}
 
         self.extractInputData()
         self.convertCoordinates()
+        self.calculateBaselinePairs()
         
     def extractInputData(self):
         """
@@ -83,5 +86,33 @@ class TelescopeModel():
         """
         if self.input_dimensions == 'ft':
             self.coord_matrix = self.coord_matrix * 0.3048
+
+    def calculateBaselinePairs(self):
+        """
+        Calculates baseline vectors for every pair of antennae in distribution
+
+        Parameters
+        -------
+        self.coord_matrix : np array
+            2D numpy array containing antenna cartesian coordinates
+        
+        Returns
+        -------
+        self.baseline_dict : dict
+            dictionary with tuple of antenna pair indices as key and tuple of baseline vector as value
+        """
+        # Identify all combinations then calculate vector between each point
+        comb_list = list(itertools.combinations(enumerate(self.coord_matrix), 2))
+        for comb in comb_list:
+            ant1 = comb[0]
+            ant2 = comb[1]
+            i1 = ant1[0]
+            i2 = ant2[0]
+            x = ant2[1][0] - ant1[1][0]
+            y = ant2[1][1] - ant1[1][1]
+            self.baseline_dict[(i1,i2)] = (x,y)
+
+        print(self.baseline_dict)
+
 
 TelescopeModel()
