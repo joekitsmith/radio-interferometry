@@ -12,6 +12,7 @@ class TelescopeModel():
         self.coord_matrix = None
 
         self.extractInputData()
+        self.convertCoordinates()
         
     def extractInputData(self):
         """
@@ -45,7 +46,7 @@ class TelescopeModel():
                 count += 1
                 dim = next(text).replace("\n", "")
                 if dim == "m" or dim == "ft":
-                    self.input_dimensions = next(text).replace("\n", "")
+                    self.input_dimensions = dim
                 else:
                     print("Invalid length dimension")
                     break
@@ -63,6 +64,24 @@ class TelescopeModel():
                 coord_list.append(coord)
 
         self.coord_matrix = np.array(coord_list)
-        print(self.coord_matrix)
+
+    def convertCoordinates(self):
+        """
+        Converts coordinates to metres if in feet
+
+        Parameters
+        -------
+        self.coord_matrix : np array
+            2D numpy array containing antenna cartesian coordinates
+        self.input_dimensions: str
+            length dimension of coordinates - m (metres) or ft (feet)
+
+        Returns
+        -------
+        self.coord_matrix : np.array
+            2D numpy matrix containing antenna cartesian coordinates in metres
+        """
+        if self.input_dimensions == 'ft':
+            self.coord_matrix = self.coord_matrix * 0.3048
 
 TelescopeModel()

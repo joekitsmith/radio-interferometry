@@ -1,5 +1,5 @@
 > Length dimension (m or ft)
-d
+ft
 > Coordinates
 (1,4)
 (2,6)
