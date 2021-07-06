@@ -12,10 +12,6 @@ class TelescopeModel():
         self.input_dimensions = None
         self.coord_matrix = None
         self.baseline_dict = {}
-
-        self.extractInputData()
-        self.convertCoordinates()
-        self.calculateBaselinePairs()
         
     def extractInputData(self):
         """
@@ -36,18 +32,18 @@ class TelescopeModel():
         """
         # Open text file from same directory
         try:
-            text = open(os.path.join(sys.path[0], self.txt_path), "r")
+            file = open(os.path.join(sys.path[0], self.txt_path), "r")
         except:
             print("Text file could not be opened")
             text = []
 
         coord_list = []
         count = 0
-        for i, line in enumerate(text):
+        for i, line in enumerate(file):
             # Extract length dimension
             if line.startswith(">") and count == 0:
                 count += 1
-                dim = next(text).replace("\n", "")
+                dim = next(file).replace("\n", "")
                 if dim == "m" or dim == "ft":
                     self.input_dimensions = dim
                 else:
@@ -65,6 +61,11 @@ class TelescopeModel():
                     coord_list = []
                     break
                 coord_list.append(coord)
+
+        try:
+            file.close()
+        except:
+            print("Text file could not be closed")
 
         self.coord_matrix = np.array(coord_list)
 
@@ -114,5 +115,7 @@ class TelescopeModel():
 
         print(self.baseline_dict)
 
-
-TelescopeModel()
+telescope_model = TelescopeModel()
+telescope_model.extractInputData()
+telescope_model.convertCoordinates()
+telescope_model.calculateBaselinePairs()

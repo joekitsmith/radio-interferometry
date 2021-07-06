@@ -1,7 +1,7 @@
-> Length dimension (m or ft)
+> Length dimension
 ft
 > Coordinates
-(1,4)
-(2,6)
-(3,6)
-(4,5)
+(1,1)
+(1,2)
+(3,5)
+(6,7)
