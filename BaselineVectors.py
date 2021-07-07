@@ -9,9 +9,8 @@ class TelescopeModel():
     def __init__(self):
 
         self.txt_path = "antennae_coordinates.txt"
-        self.input_dimensions = None
+        self.input_dimensions = ""
         self.coord_matrix = None
-        self.baseline_dict = {}
         
     def extractInputData(self):
         """
@@ -35,32 +34,35 @@ class TelescopeModel():
             file = open(os.path.join(sys.path[0], self.txt_path), "r")
         except:
             print("Text file could not be opened")
-            text = []
+            file = []
 
         coord_list = []
-        count = 0
         for i, line in enumerate(file):
             # Extract length dimension
-            if line.startswith(">") and count == 0:
-                count += 1
-                dim = next(file).replace("\n", "")
-                if dim == "m" or dim == "ft":
-                    self.input_dimensions = dim
-                else:
-                    print("Invalid length dimension")
-                    break
-            # Extract coordinates  
-            elif line.startswith(">") == False:
+            if line.startswith("Length dimension"):
                 try:
-                    line = line.replace("\n", "")
-                    x = line.split(",")[0].replace("(", "")
-                    y = line.split(",")[1].replace(")", "")
-                    coord = (int(x), int(y))
+                    dim = line[line.index('=')+2:].strip()
+                    if dim == "m" or dim == "ft":
+                        self.input_dimensions = dim
+                    else:
+                        print("Invalid length dimension")
+                        break
+                except:
+                    print("Could not find length dimension")
+            # Extract coordinates  
+            elif line.startswith("Coordinates"):
+                try:
+                    line = line[line.index('=')+2:].split(' ')
+                    for coord_str in line:
+                        coord_str = coord_str.replace("(","").replace(")","")
+                        x,y,z = coord_str.split(",")
+                        coord = (int(x), int(y), int(z))
+                        coord_list.append(coord)
                 except:
                     print("Invalid coordinates")
                     coord_list = []
-                    break
-                coord_list.append(coord)
+                    self.input_dimensions = ""
+                    break   
 
         try:
             file.close()
@@ -85,37 +87,10 @@ class TelescopeModel():
         self.coord_matrix : np.array
             2D numpy matrix containing antenna cartesian coordinates in metres
         """
+        # Convert feet to metres
         if self.input_dimensions == 'ft':
             self.coord_matrix = self.coord_matrix * 0.3048
-
-    def calculateBaselinePairs(self):
-        """
-        Calculates baseline vectors for every pair of antennae in distribution
-
-        Parameters
-        -------
-        self.coord_matrix : np array
-            2D numpy array containing antenna cartesian coordinates
-        
-        Returns
-        -------
-        self.baseline_dict : dict
-            dictionary with tuple of antenna pair indices as key and tuple of baseline vector as value
-        """
-        # Identify all combinations then calculate vector between each point
-        comb_list = list(itertools.combinations(enumerate(self.coord_matrix), 2))
-        for comb in comb_list:
-            ant1 = comb[0]
-            ant2 = comb[1]
-            i1 = ant1[0]
-            i2 = ant2[0]
-            x = ant2[1][0] - ant1[1][0]
-            y = ant2[1][1] - ant1[1][1]
-            self.baseline_dict[(i1,i2)] = (x,y)
-
-        print(self.baseline_dict)
 
 telescope_model = TelescopeModel()
 telescope_model.extractInputData()
 telescope_model.convertCoordinates()
-telescope_model.calculateBaselinePairs()
