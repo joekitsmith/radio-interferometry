@@ -34,6 +34,8 @@ def calculate3DPhaseDifference(d, wav, alt, az):
 
     Parameters
     -------
+    d : int
+        baseline separation of two antenna
     alt : int
         altitude of radio source from surface of earth
     az : int
