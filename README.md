@@ -6,9 +6,10 @@ Install deepdiff package
 
 
 
+
 **BASELINE VECTOR CALCULATION**
 
-Edit "cartesian_coordinates.txt" in parent folder. Add input units and coordinates of antennae in array.
+Edit "input_coordinates.txt" in parent folder. Add input units and coordinates of antennae in array.
 
 Allowed units include m, ft and d for metres, feet and degrees.
 
