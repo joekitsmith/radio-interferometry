@@ -72,7 +72,7 @@ class BaselineVectorCalculator():
 
 if __name__ == '__main__':
     parser = FileReader()
-    text = parser.extractText("latlongalt_coordinates.txt")
+    text = parser.extractText("input_coordinates.txt")
 
     coord_extractor = CoordinateExtractor()
     input_units = coord_extractor.extractCoordinateListFromText('Units =', text)[0]
