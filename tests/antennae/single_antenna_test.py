@@ -1,7 +1,7 @@
 ## SINGLE ANTENNA TESTS ##
 
 import unittest
-from single_antenna import SingleAntenna
+from source.antennae.single_antenna import SingleAntenna
 
 def checkListEqual(list_1, list_2, dec_places):
     """
